@@ -1,5 +1,5 @@
-import { COLORS } from "../const.js";
-import { getRandomInteger } from "../utils.js";
+import {COLORS} from "../const.js";
+import {getRandomInteger} from "../utils.js";
 
 const generateDescription = () => {
   const descriptions = [
@@ -13,16 +13,12 @@ const generateDescription = () => {
   return descriptions[randomIndex];
 };
 
-const generateColors = () => {
-  const colors = ['black', 'yellow', 'blue', 'green', 'pink'];
-
-  const randomIndex = getRandomInteger(0, colors.length - 1);
-
-  return COLORS[randomIndex];
-};
-
 const generateDate = () => {
-
+  // Когда в руках молоток, любая проблема - гвоздь.
+  // Вот и для генерации случайного булевого значения
+  // можно использовать "функцию из интернета".
+  // Ноль - ложь, один - истина. Для верности приводим
+  // к булевому типу с помощью Boolean
   const isDate = Boolean(getRandomInteger(0, 1));
 
   if (!isDate) {
@@ -33,6 +29,10 @@ const generateDate = () => {
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
   const currentDate = new Date();
 
+  // По заданию дедлайн у задачи устанавливается без учёта времеми,
+  // но объект даты без времени завести нельзя,
+  // поэтому будем считать срок у всех задач -
+  // это 23:59:59 установленной даты
   currentDate.setHours(23, 59, 59, 999);
 
   currentDate.setDate(currentDate.getDate() + daysGap);
@@ -52,10 +52,17 @@ const generateRepeating = () => {
   };
 };
 
+const getRandomColor = () => {
+  const randomIndex = getRandomInteger(0, COLORS.length - 1);
+
+  return COLORS[randomIndex];
+};
+
 export const generateTask = () => {
   const dueDate = generateDate();
-  const repeating = dueDate === null ?
-    generateRepeating() : {
+  const repeating = dueDate === null
+    ? generateRepeating()
+    : {
       mo: false,
       tu: false,
       we: false,
@@ -65,14 +72,12 @@ export const generateTask = () => {
       su: false
     };
 
-  const color = generateColors();
-  const description = generateDescription();
   return {
-    description,
+    description: generateDescription(),
     dueDate,
     repeating,
-    color,
+    color: getRandomColor(),
     isArchive: Boolean(getRandomInteger(0, 1)),
-    isFavorite: Boolean(getRandomInteger(0, 1)),
+    isFavorite: Boolean(getRandomInteger(0, 1))
   };
 };
